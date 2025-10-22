@@ -133,3 +133,34 @@ print(f"Number of rows after filtering: {len(filtered_dev)}")
 print("\nExample of filtering by date (2000-2001):")
 filtered_date = filter_by_date(df, '2000-01-01', '2001-12-31')
 print(f"Number of rows after filtering: {len(filtered_date)}")
+
+# Group by month with calculation of average value
+df['year_month'] = df['date'].dt.to_period('M')
+monthly_stats = df.groupby('year_month').agg({
+    'rate': ['mean', 'median', 'std', 'min', 'max']
+}).round(4)
+
+monthly_stats.columns = ['mean_rate', 'median_rate', 'std_rate', 'min_rate', 'max_rate']
+monthly_stats = monthly_stats.reset_index()
+
+print("Monthly stats:")
+print(monthly_stats.head(10))
+
+# Visualization of rate changes over the entire period
+plt.figure(figsize=(15, 8))
+plt.plot(df['date'], df['rate'], linewidth=1, alpha=0.7)
+plt.title('Change in rate for the entire period', fontsize=16, fontweight='bold')
+plt.xlabel('Date', fontsize=12)
+plt.ylabel('Rate', fontsize=12)
+plt.grid(True, alpha=0.3)
+plt.xticks(rotation=45)
+
+# Adding a moving average for smoothing
+window_size = 30
+df['rolling_mean'] = df['rate'].rolling(window=window_size).mean()
+plt.plot(df['date'], df['rolling_mean'], color='red', linewidth=2, label=f'Moving average ({window_size} days)')
+
+plt.legend()
+plt.tight_layout()
+plt.savefig('full_period_rate.png', dpi=300, bbox_inches='tight')
+plt.show()
