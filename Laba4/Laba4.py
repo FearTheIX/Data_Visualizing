@@ -56,3 +56,38 @@ df['abs_deviation_from_mean'] = abs(df['rate'] - mean_rate)
 
 print("\nData with added deviation columns:")
 print(df.head())
+
+# Statistical analysis of the main columns
+columns_to_analyze = ['rate', 'deviation_from_median', 'deviation_from_mean', 
+                     'abs_deviation_from_median', 'abs_deviation_from_mean']
+
+print("Statistical info:")
+print(df[columns_to_analyze].describe())
+
+# Visualizing outliers with Boxplot
+plt.figure(figsize=(15, 10))
+
+for i, column in enumerate(columns_to_analyze, 1):
+    plt.subplot(2, 3, i)
+    df[column].plot(kind='box')
+    plt.title(f'Boxplot for {column}')
+    plt.ylabel('Value')
+
+plt.tight_layout()
+plt.savefig('boxplots.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Outlier analysis using IQR
+def detect_outliers_iqr(series):
+    Q1 = series.quantile(0.25)
+    Q3 = series.quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    outliers = series[(series < lower_bound) | (series > upper_bound)]
+    return outliers
+
+print("\nOutliers in main rate:")
+outliers_rate = detect_outliers_iqr(df['rate'])
+print(f"Outliers rate: {len(outliers_rate)}")
+print(f"Outliers percentage: {len(outliers_rate)/len(df):.4f}")
