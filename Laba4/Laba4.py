@@ -40,3 +40,19 @@ else:
 # Additional checking for data anomalies
 print(f"\nMinimum rate value: {df['rate'].min()}")
 print(f"Maximum rate value: {df['rate'].max()}")
+
+# Calculating the median and mean
+median_rate = df['rate'].median()
+mean_rate = df['rate'].mean()
+
+print(f"Median rate: {median_rate}")
+print(f"Mean rate: {mean_rate}")
+
+# Adding columns with deviations
+df['deviation_from_median'] = df['rate'] - median_rate
+df['deviation_from_mean'] = df['rate'] - mean_rate
+df['abs_deviation_from_median'] = abs(df['rate'] - median_rate)
+df['abs_deviation_from_mean'] = abs(df['rate'] - mean_rate)
+
+print("\nData with added deviation columns:")
+print(df.head())
