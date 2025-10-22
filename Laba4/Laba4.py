@@ -91,3 +91,45 @@ print("\nOutliers in main rate:")
 outliers_rate = detect_outliers_iqr(df['rate'])
 print(f"Outliers rate: {len(outliers_rate)}")
 print(f"Outliers percentage: {len(outliers_rate)/len(df):.4f}")
+
+def filter_by_deviation(dataframe, deviation_threshold):
+    """
+    Filter the DataFrame by the value of deviation from the mean
+    
+    Parameters:
+    dataframe (pd.DataFrame): Original DataFrame
+    deviation_threshold (float): Deviation threshold
+    
+    Returns:
+    pd.DataFrame: Filtered DataFrame
+    """
+    filtered_df = dataframe[dataframe['abs_deviation_from_mean'] >= deviation_threshold]
+    return filtered_df
+
+def filter_by_date(dataframe, start_date, end_date):
+    """
+    Filters the DataFrame by a date range
+    
+    Parameters:
+    dataframe (pd.DataFrame): Original DataFrame
+    start_date (str): Start date in 'YYYY-MM-DD' format
+    end_date (str): End date in 'YYYY-MM-DD' format
+    
+    Returns:
+    pd.DataFrame: Filtered DataFrame
+    """
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    
+    mask = (dataframe['date'] >= start_date) & (dataframe['date'] <= end_date)
+    filtered_df = dataframe[mask]
+    return filtered_df
+
+# Function usage example
+print("Example of filtering by deviation (threshold = 10):")
+filtered_dev = filter_by_deviation(df, 10)
+print(f"Number of rows after filtering: {len(filtered_dev)}")
+
+print("\nExample of filtering by date (2000-2001):")
+filtered_date = filter_by_date(df, '2000-01-01', '2001-12-31')
+print(f"Number of rows after filtering: {len(filtered_date)}")
