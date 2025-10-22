@@ -1,4 +1,4 @@
-import pandas as pd
+ï»¿import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -14,9 +14,29 @@ df.columns = ['date', 'rate']
 df['date'] = pd.to_datetime(df['date'])
 
 # Display basic information about the data
-print("Ïåðâûå 5 ñòðîê äàííûõ:")
+print("ÐŸÐµÑ€Ð²Ñ‹Ðµ 5 ÑÑ‚Ñ€Ð¾Ðº Ð´Ð°Ð½Ð½Ñ‹Ñ…:")
 print(df.head())
-print("\nÈíôîðìàöèÿ î äàííûõ:")
+print("\nÐ˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ Ð¾ Ð´Ð°Ð½Ð½Ñ‹Ñ…:")
 print(df.info())
-print("\nÎñíîâíûå ñòàòèñòèêè:")
+print("\nÐžÑÐ½Ð¾Ð²Ð½Ñ‹Ðµ ÑÑ‚Ð°Ñ‚Ð¸ÑÑ‚Ð¸ÐºÐ¸:")
 print(df.describe())
+
+# Check for missing values
+print("Missing values:")
+print(df.isnull().sum())
+print(f"\nMissing value rate: {df.isnull().mean()}")
+
+# Check for 'NaN' values
+print(f"\nNaN values: {df.isna().sum().sum()}")
+
+# Handle missing values â€‹â€‹(if any)
+if df.isnull().sum().sum() > 0:
+    # Fill the gaps using the forward fill method (with the last known value)
+    df = df.fillna(method='ffill')
+    print("Missing values filled")
+else:
+    print("No missing values")
+
+# Additional checking for data anomalies
+print(f"\nMinimum rate value: {df['rate'].min()}")
+print(f"Maximum rate value: {df['rate'].max()}")
