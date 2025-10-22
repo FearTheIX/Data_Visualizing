@@ -220,3 +220,39 @@ def analyze_month(dataframe, target_month):
 # Function using example
 print("Specific month analysis example:")
 example_month = analyze_month(df, '2000-01')
+
+# Additional analysis - top months with the highest volatility
+monthly_stats['volatility'] = monthly_stats['std_rate'] / monthly_stats['mean_rate']
+top_volatile_months = monthly_stats.nlargest(10, 'volatility')
+
+print("Топ 10 месяцев с наибольшей волатильностью:")
+print(top_volatile_months[['year_month', 'mean_rate', 'std_rate', 'volatility']])
+
+# Rate distribution visualization
+plt.figure(figsize=(15, 5))
+
+plt.subplot(1, 2, 1)
+plt.hist(df['rate'], bins=50, alpha=0.7, edgecolor='black')
+plt.title('Rate distribution')
+plt.xlabel('Rare')
+plt.ylabel('Frequency')
+
+plt.subplot(1, 2, 2)
+df['rate'].plot(kind='box')
+plt.title('Rate Boxplot')
+
+plt.tight_layout()
+plt.savefig('distribution_analysis.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Yearly analysis
+df['year'] = df['date'].dt.year
+yearly_stats = df.groupby('year').agg({
+    'rate': ['mean', 'median', 'std', 'min', 'max']
+}).round(4)
+
+yearly_stats.columns = ['mean_rate', 'median_rate', 'std_rate', 'min_rate', 'max_rate']
+yearly_stats = yearly_stats.reset_index()
+
+print("\nYearly stats:")
+print(yearly_stats)
