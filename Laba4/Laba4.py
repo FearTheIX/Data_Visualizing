@@ -164,3 +164,59 @@ plt.legend()
 plt.tight_layout()
 plt.savefig('full_period_rate.png', dpi=300, bbox_inches='tight')
 plt.show()
+
+def analyze_month(dataframe, target_month):
+    """
+    Analyzes data for a specified month and plots a graph
+    
+    Parameters:
+    dataframe (pd.DataFrame): Original DataFrame
+    target_month (str): Month for analysis in 'YYYY-MM' format
+    """
+    # Filtering data for a specified month
+    month_data = dataframe[dataframe['year_month'] == target_month].copy()
+    
+    if month_data.empty:
+        print(f"No data for month {target_month}")
+        return
+    
+    # Statistics calculation
+    month_mean = month_data['rate'].mean()
+    month_median = month_data['rate'].median()
+    
+    print(f"Analysis of month {target_month}:")
+    print(f"Mean: {month_mean:.4f}")
+    print(f"Median: {month_median:.4f}")
+    print(f"Number of days: {len(month_data)}")
+    
+    # Plot a graph
+    plt.figure(figsize=(12, 6))
+    
+    # Daily rates graph
+    plt.plot(month_data['date'], month_data['rate'], 
+             marker='o', linewidth=2, markersize=4, label='Daily rate')
+    
+    # Horizontal lines for mean and median
+    plt.axhline(y=month_mean, color='red', linestyle='--', 
+                linewidth=2, label=f'Mean ({month_mean:.4f})')
+    plt.axhline(y=month_median, color='green', linestyle='--', 
+                linewidth=2, label=f'Median ({month_median:.4f})')
+    
+    plt.title(f'Rate analysis for {target_month}', fontsize=16, fontweight='bold')
+    plt.xlabel('Date', fontsize=12)
+    plt.ylabel('Rate', fontsize=12)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    
+    # Graph save
+    filename = f"month_analysis_{target_month}.png"
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    plt.show()
+    
+    return month_data
+
+# Function using example
+print("Specific month analysis example:")
+example_month = analyze_month(df, '2000-01')
